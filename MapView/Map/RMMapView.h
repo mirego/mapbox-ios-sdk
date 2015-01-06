@@ -516,6 +516,9 @@ typedef enum : NSUInteger {
 *   If the user’s location cannot be determined, this property contains the value `NO`. */
 @property (nonatomic, readonly, getter=isUserLocationVisible) BOOL userLocationVisible;
 
+/** Whether the map view should keep the user location marker on top when active, The default value is `NO`. */
+@property(nonatomic) BOOL keepUserLocationOnTop;
+
 /** The mode used to track the user location. */
 @property (nonatomic, assign) RMUserTrackingMode userTrackingMode;
 

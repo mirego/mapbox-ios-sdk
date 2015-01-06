@@ -347,6 +347,7 @@
     }
 
     self.displayHeadingCalibration = YES;
+    self.keepUserLocationOnTop = NO;
 
     _mapTransform = CGAffineTransformIdentity;
     _annotationTransform = CATransform3DIdentity;
@@ -3185,8 +3186,16 @@
     for (CGFloat i = 0; i < [sortedAnnotations count]; i++)
         ((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).layer.zPosition = (CGFloat)i;
 
+    if (self.keepUserLocationOnTop) {
+        NSMutableArray *userLocationAnnotations = [NSMutableArray arrayWithArray:[_visibleAnnotations allObjects]];
+        [userLocationAnnotations filterUsingPredicate:[NSPredicate predicateWithFormat:@"isUserLocationAnnotation = YES"]];
+
+        for (CGFloat i = 0; i < [userLocationAnnotations count]; i++) {
+            ((RMAnnotation *)[userLocationAnnotations objectAtIndex:i]).layer.zPosition = MAXFLOAT - 1 - (CGFloat)i;
+        }
+    }
+
     // Bring any active callout annotation to the front.
-    //
     if (_currentAnnotation)
         _currentAnnotation.layer.zPosition = _currentCallout.layer.zPosition = MAXFLOAT;
 }
@@ -3311,6 +3320,7 @@
         self.userLocation = [RMUserLocation annotationWithMapView:self coordinate:CLLocationCoordinate2DMake(MAXFLOAT, MAXFLOAT) andTitle:nil];
 
         _locationManager = [CLLocationManager new];
+        _locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         // enable iOS 8+ location authorization API
