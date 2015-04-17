@@ -45,6 +45,12 @@
     if ( ! [super layer])
     {
         RMShape *shape = [[RMShape alloc] initWithView:self.mapView];
+        
+        if(self.lineColor != nil)
+        {
+            [shape setLineWidth:self.lineWidth];
+            [shape setLineColor:self.lineColor];
+        }
 
         [shape performBatchOperations:^(RMShape *aShape)
         {
